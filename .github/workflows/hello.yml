@@ -33,6 +33,12 @@ jobs:
       - name: Print operating system information
         run: echo "The Operating System is ${{ runner.os }}"
 
+       # adding step to fail
+      - name: Force a build failure
+        run: |
+          echo "Simulating an error..."
+          exit 1
+
 
   # # 1st job (give indentation)
   # say-hello:
