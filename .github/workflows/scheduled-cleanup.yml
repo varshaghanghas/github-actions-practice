@@ -1,0 +1,15 @@
+name: Scheduled daily workflow
+
+on:
+  workflow_dispatch:
+    
+  schedule:
+    - cron: '0 0 * * *' # runs daily at 00:00 UTC
+
+jobs:
+  daily-maintenance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Maintenace task
+        run: echo "Executing daily scheduled maintenace job at midnight UTC."
