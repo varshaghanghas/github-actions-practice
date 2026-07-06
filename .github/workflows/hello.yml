@@ -17,6 +17,15 @@ jobs:
       - name: Print Hello Message
         run: echo "Hello from GitHub Actions!" 
 
+      # Print the current date and time
+      - name: Print current date and time
+        run: date
+
+      # print branch name
+      - name: Print branch name
+        run: echo "The branch is ${{ github.ref_name }}"
+
+
   # # 1st job (give indentation)
   # say-hello:
   #   # creates an Ephemeral Container with Ubuntu running
