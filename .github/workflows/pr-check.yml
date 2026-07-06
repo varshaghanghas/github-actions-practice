@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: action/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Print PR branch
         run: echo "PR check running for branch ${{ github.head_ref }}"
