@@ -29,3 +29,11 @@ jobs:
 
       - name: Verify python version
         run: python --version
+
+
+      # Task 5 Part 2: Simulate a failure ONLY on Python 3.11 on Ubuntu
+      - name: Simulating Test Failure
+        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+        run: |
+          echo "Intentionally failing this environment to test fail-fast..."
+          exit 1
