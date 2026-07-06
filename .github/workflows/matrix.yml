@@ -9,6 +9,7 @@ on:
 jobs:
   test-environment:
     strategy:
+      fail-fast: false    # keeps other jobs running if one fails
       matrix:
         python-version: ['3.10', '3.11', '3.12']
         os: [ubuntu-latest, windows-latest]
