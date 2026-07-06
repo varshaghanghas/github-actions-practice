@@ -1,0 +1,25 @@
+name: Manual deployment workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target Environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check code
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment Step
+        run: |
+          echo "Deploying applkication..."
+          echo "Selected target environment ${{ github.event.inputs.environment }}"
