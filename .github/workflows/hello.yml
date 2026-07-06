@@ -25,6 +25,14 @@ jobs:
       - name: Print branch name
         run: echo "The branch is ${{ github.ref_name }}"
 
+      # list repo files
+      - name: List files in repository
+        run: ls -la
+
+      # print operating system information
+      - name: Print operating system information
+        run: echo "The Operating System is ${{ runner.os }}"
+
 
   # # 1st job (give indentation)
   # say-hello:
