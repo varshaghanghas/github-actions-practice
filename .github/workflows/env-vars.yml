@@ -1,0 +1,32 @@
+name: Environment Variables & Context
+
+on:
+  push:
+  workflow_dispatch:
+    
+# workflow level Environment Vars
+env:
+  APP_NAME: GitHubWorkflow
+
+jobs:
+  display_variables:
+    runs-on: ubuntu-latest
+
+    # JOb level env vars
+    env:
+      ENVIRONMENT: staging
+
+    steps:
+      - name: Print Variables & Context
+        # step level env vars
+        env:
+          VERSION: 1.0.0
+        run: |
+          echo "=== Environment variables ==="
+          echo "App Name (Workflow): $APP_NAME"
+          echo "Environment (Job): $ENVIRONMENT"
+          echo "Version (Step): $VERSION"
+          echo ""
+          echo "=== GitHub Context Variables ==="
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "Actor: ${{ github.actor }}"
