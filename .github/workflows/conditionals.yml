@@ -1,0 +1,36 @@
+name: Advanced Conditionals Workflow
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # Requirement 3: A job that only runs on push events, not on pull requests
+  push_only_job:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acknowledge Push Event
+        run: echo "This job executes exclusively during a push event."
+
+  step_conditionals_job:
+    runs-on: ubuntu-latest
+    steps:
+      # Requirement 4: A step with continue-on-error: true
+      - name: Flaky Step (Allowed to Fail)
+        id: flaky_step
+        continue-on-error: true
+        run: |
+          echo "Simulating a critical step failure..."
+          exit 1
+
+      # Requirement 1: A step that only runs when the branch is main
+      - name: Main Branch Only Action
+        if: github.ref == 'refs/heads/main'
+        run: echo "This text is only printed when executing on the main branch."
+
+      # Requirement 2: A step that only runs when the previous step failed
+      # Note: Since step 1 used continue-on-error, we track its explicit step outcome
+      - name: Failure Recovery Handling
+        if: steps.flaky_step.outcome == 'failure'
+        run: echo "Alert! The flaky step failed. Initiating fallback routines."
