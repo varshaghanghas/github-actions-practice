@@ -6,13 +6,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  verify-runner:
-    name: Run on My Container
-    runs-on: [self-hosted, Linux, X64]
+  run-on-my-hardware:
+    name: Execute on Container Runner
+    runs-on: self-hosted
     steps:
-      - name: Verify Environment
+      - name: System Diagnostics
         run: |
-          echo "=== Runner Verification ==="
-          echo "Testing execution inside the self-hosted container!"
-          echo "Hostname: $(hostname)"
-          echo "Current User: $(whoami)"
+          echo "=== Hostname ==="
+          hostname
+          echo "=== Working Directory ==="
+          pwd
+
+      - name: Create Persistent File
+        run: |
+          echo "GitHub Actions was here!" > github_test_file.txt
+          echo "File created successfully inside the workspace."
