@@ -1,4 +1,4 @@
-name: Test Self-Hosted Runner
+name: Test Self-Hosted Runner with Labels
 
 on:
   push:
@@ -6,18 +6,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-on-my-hardware:
-    name: Execute on Container Runner
-    runs-on: self-hosted
+  labeled-run:
+    name: Execute on Labeled Runner
+    runs-on: [self-hosted, my-linux-runner]
     steps:
-      - name: System Diagnostics
+      - name: Confirm Execution
         run: |
-          echo "=== Hostname ==="
-          hostname
-          echo "=== Working Directory ==="
-          pwd
-
-      - name: Create Persistent File
-        run: |
-          echo "GitHub Actions was here!" > github_test_file.txt
-          echo "File created successfully inside the workspace."
+          echo "Success! The job successfully routed using custom labels."
+          echo "Executed on runner: $(hostname)"
