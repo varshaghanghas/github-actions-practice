@@ -1,0 +1,19 @@
+name: Explore Pre-installed Tools
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  check-versions:
+    name: Check Tool Versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Tool Versions
+        run: |
+          echo "=== CLI Tool Versions ==="
+          docker --version
+          python3 --version
+          node --version
+          git --version
