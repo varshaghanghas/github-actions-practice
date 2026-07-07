@@ -1,0 +1,38 @@
+name: GitHub-Hosted Runners Test
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  ubuntu-job:
+    name: Ubuntu Runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Environment Info
+        run: |
+          echo "OS Name: Linux (Ubuntu)"
+          echo "Hostname: $(hostname)"
+          echo "Current User: $(whoami)"
+
+  windows-job:
+    name: Windows Runner
+    runs-on: windows-latest
+    steps:
+      - name: Print Environment Info
+        shell: cmd
+        run: |
+          echo OS Name: Windows
+          echo Hostname: %COMPUTERNAME%
+          echo Current User: %USERNAME%
+
+  macos-job:
+    name: macOS Runner
+    runs-on: macos-latest
+    steps:
+      - name: Print Environment Info
+        run: |
+          echo "OS Name: macOS"
+          echo "Hostname: $(hostname)"
+          echo "Current User: $(whoami)"
