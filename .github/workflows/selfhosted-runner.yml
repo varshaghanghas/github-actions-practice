@@ -1,0 +1,18 @@
+name: Test Self-Hosted Runner
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  verify-runner:
+    name: Run on My Container
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - name: Verify Environment
+        run: |
+          echo "=== Runner Verification ==="
+          echo "Testing execution inside the self-hosted container!"
+          echo "Hostname: $(hostname)"
+          echo "Current User: $(whoami)"
