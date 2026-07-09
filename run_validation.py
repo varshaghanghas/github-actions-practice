@@ -5,7 +5,7 @@ def check_system_integrity():
     print("Initializing environment validation...")
     
     # Simulating a core condition or business logic rule
-    environment_ready = True 
+    environment_ready = False 
     
     if not environment_ready:
         print("❌ CRITICAL ERROR: System integrity check failed!")
