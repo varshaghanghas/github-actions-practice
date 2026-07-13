@@ -1,0 +1,73 @@
+name: PR Validation Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  file-size-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches full history to compare commits accurately
+
+      - name: Validate File Sizes
+        run: |
+          echo "Scanning modified files for size limits (>1MB)..."
+          
+          # Get list of changed files between the PR branch and base branch
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          
+          LARGE_FILES_FOUND=0
+          
+          for file in $CHANGED_FILES; do
+            if [ -f "$file" ]; then
+              # Get file size in bytes
+              FILE_SIZE=$(stat -c%s "$file")
+              # 1 MB = 1048576 bytes
+              if [ "$FILE_SIZE" -gt 1048576 ]; then
+                echo "ERROR: File '$file' exceeds the 1MB limit ($(NUM=$(($FILE_SIZE/1024)); echo $NUM) KB)."
+                LARGE_FILES_FOUND=$((LARGE_FILES_FOUND + 1))
+              fi
+            fi
+          done
+          
+          if [ "$LARGE_FILES_FOUND" -gt 0 ]; then
+            exit 1
+          fi
+          echo "All modified files are within acceptable size limits."
+
+  branch-name-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Branch Prefix
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          echo "Evaluating branch name: $BRANCH_NAME"
+          
+          if [[ "$BRANCH_NAME" =~ ^(feature/|fix/|docs/) ]]; then
+            echo "Branch naming convention matched."
+          else
+            echo "ERROR: Branch name does not match required conventions."
+            echo "Allowed prefixes: feature/*, fix/*, docs/*"
+            exit 1
+          fi
+
+  pr-body-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect PR Body
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Strip spaces and lines to check actual content presence
+          CLEANED_BODY=$(echo "$PR_BODY" | tr -d '[:space:]')
+          
+          if [ -z "$CLEANED_BODY" ]; then
+            echo "::warning::The description of this Pull Request is completely empty. Please add context."
+          else
+            echo "PR description contains documentation text."
+          fi
