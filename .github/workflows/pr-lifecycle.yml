@@ -1,0 +1,28 @@
+name: Advanced PR Lifecycle
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  inspect-pr-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log PR Metadata
+        run: |
+          echo "=================== PR METADATA ==================="
+          echo "Event Action Fired  : ${{ github.event.action }}"
+          echo "PR Title            : ${{ github.event.pull_request.title }}"
+          echo "PR Author           : ${{ github.event.pull_request.user.login }}"
+          echo "Source Branch (Head): ${{ github.event.pull_request.head.ref }}"
+          echo "Target Branch (Base): ${{ github.event.pull_request.base.ref }}"
+          echo "==================================================="
+
+      - name: Execute Post-Merge Operations
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
+        run: |
+          echo "Status: Confirmed Merged!"
+          echo "Executing downstream tasks for merged PR #${{ github.event.pull_request.number }}..."
