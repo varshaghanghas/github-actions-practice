@@ -1,0 +1,43 @@
+name: Reusable Build Pipeline
+
+# 1. Set the trigger to workflow_call
+on:
+  workflow_call:
+    # 2. Add an inputs section
+    inputs:
+      app_name:
+        description: 'The name of the application'
+        type: string
+        required: true
+      environment:
+        description: 'Target deployment environment'
+        type: string
+        required: true
+        default: 'staging'
+    # 3. Add a secrets section
+    secrets:
+      docker_token:
+        description: 'Authentication token for Docker registry'
+        required: true
+
+jobs:
+  # 4. Create a job that executes the build steps
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Print Details
+        run: |
+          echo "Building ${{ inputs.app_name }} for ${{ inputs.environment }}"
+
+      - name: Check Secret Availability
+        # Conditional validation to safely check if the token exists without printing it
+        run: |
+          if [ -n "${{ secrets.docker_token }}" ]; then
+            echo "Docker token is set: true"
+          else
+            echo "Docker token is set: false"
+            exit 1
+          fi

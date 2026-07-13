@@ -1,0 +1,16 @@
+name: Trigger App Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  # Call the reusable workflow at the job level
+  run-reusable-build:
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      app_name: "my-web-app"
+      environment: "production"
+    secrets: inherit
+    # secrets:
+    #   docker_token: ${{ secrets.MY_REPO_DOCKER_SECRET }}
