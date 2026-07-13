@@ -1,0 +1,41 @@
+name: 'Setup and Greet'
+description: 'Greets users in a specified language and logs runner metadata'
+
+# 1. Define inputs
+inputs:
+  name:
+    description: 'Name of the person to greet'
+    required: true
+  language:
+    description: 'Language code (e.g., en, es)'
+    required: true
+    default: 'en'
+
+# 3. Define the outputs
+outputs:
+  greeted:
+    description: 'Confirmation that the greeting was processed'
+    value: 'true'
+
+# Tell GitHub this is a step-level composite action
+runs:
+  using: 'composite'
+  steps:
+    # 2. Add step to print greeting in the specified language
+    - name: Print Greeting
+      run: |
+        if [ "${{ inputs.language }}" = "es" ]; then
+          echo "¡Hola, ${{ inputs.name }}!"
+        elif [ "${{ inputs.language }}" = "fr" ]; then
+          echo "Bonjour, ${{ inputs.name }}!"
+        else
+          echo "Hello, ${{ inputs.name }}!"
+        fi
+      shell: bash # <-- MANDATORY for every step in a composite action
+
+    # 2. Add step to print current date and runner OS
+    - name: Log Metadata
+      run: |
+        echo "Current Date/Time: $(date)"
+        echo "Runner Operating System: ${{ runner.os }}"
+      shell: bash

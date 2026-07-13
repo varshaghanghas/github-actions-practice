@@ -1,0 +1,24 @@
+name: Test Composite Action
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # <-- ADD THIS LINE to enable manual triggering from the UI
+
+jobs:
+  greet-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Setup and Greet Action
+        id: greet_step
+        uses: ./.github/actions/setup-and-greet
+        with:
+          name: "Alex"
+          language: "es"
+
+      - name: Verify Output
+        run: |
+          echo "Was greeting processed? ${{ steps.greet_step.outputs.greeted }}"
