@@ -14,3 +14,13 @@ jobs:
     secrets: inherit
     # secrets:
     #   docker_token: ${{ secrets.MY_REPO_DOCKER_SECRET }}
+
+  # Day 46- task 3: Run a downstream task that uses the output
+  deploy-app:
+    runs-on: ubuntu-latest
+    needs: run-reusable-build # <-- CRITICAL: Ensures this job waits for the build to finish
+    steps:
+      - name: Print Version From Reusable Workflow
+        run: |
+          # Reference pattern: needs.<job_id>.outputs.<output_name>
+          echo "The version retrieved from the build job is: ${{ needs.run-reusable-build.outputs.build_version }}"

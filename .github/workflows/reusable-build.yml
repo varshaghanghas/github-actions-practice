@@ -20,13 +20,33 @@ on:
         description: 'Authentication token for Docker registry'
         required: true
 
+    # day 46 task 4: Declare the workflow-level outputs
+    outputs:
+      build_version:
+        description: "The generated version string"
+        value: ${{ jobs.build.outputs.version_string }} # Maps the job output up to the workflow
+
 jobs:
   # 4. Create a job that executes the build steps
   build:
     runs-on: ubuntu-latest
+    # day 46 task 4.2. Map the step output to the job output
+    outputs:
+      version_string: ${{ steps.gen_version.outputs.version }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Generate Version String
+        id: gen_version # Needed so other steps/jobs can reference this specific step
+        run: |
+          # Grab the first 7 characters of the commit SHA
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          VERSION="v1.0-${SHORT_SHA}"
+          
+          echo "Generated version: $VERSION"
+          # Save it to the official GitHub environment file
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Print Details
         run: |
