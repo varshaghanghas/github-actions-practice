@@ -1,0 +1,37 @@
+name: Scheduled Infrastructure Tasks
+
+on:
+  schedule:
+    - cron: '30 2 * * 1'   # Every Monday at 02:30 UTC
+    - cron: '0 */6 * * *'  # Every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+  workflow_dispatch:       # Allows manual testing from the Actions UI
+
+jobs:
+  maintenance-and-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Identify Trigger Source
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "Triggered by CRON Schedule Expression: ${{ github.event.schedule }}"
+          else
+            echo "Triggered Manually via Workflow Dispatch"
+          fi
+
+      - name: Service Health Check
+        run: |
+          echo "Initiating production endpoint health check..."
+          
+          # Target a public test endpoint or insert your custom production URL
+          URL="https://httpbin.org"
+          
+          # Execute curl, capture HTTP status code silently
+          STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          echo "Response Status Code: $STATUS_CODE"
+          
+          if [ "$STATUS_CODE" -ne 200 ]; then
+            echo "ERROR: Health check failed with status code $STATUS_CODE"
+            exit 1
+          fi
+          
+          echo "System health check passed successfully."

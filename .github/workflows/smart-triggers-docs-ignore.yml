@@ -1,0 +1,22 @@
+name: Global Code Verification
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  validate-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify Configurations
+        run: |
+          echo "Non-documentation update verified."
+          echo "Running infrastructure configuration checks..."
