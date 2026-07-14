@@ -1,0 +1,22 @@
+name: External Event Pipeline
+
+on:
+  repository_dispatch:
+    types: [deploy-request]
+
+jobs:
+  handle-external-event:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Process Dispatch Payload
+        run: |
+          echo "================ EXTERNAL DISPATCH ================"
+          echo "Event Type Received : ${{ github.event.action }}"
+          echo "Target Environment  : ${{ github.event.client_payload.environment }}"
+          echo "Triggered By User   : ${{ github.actor }}"
+          echo "==================================================="
+
+      - name: Dynamic Environment Deployment
+        run: |
+          ENV_TARGET="${{ github.event.client_payload.environment }}"
+          echo "Initializing deployment sequence for environment: $ENV_TARGET"
