@@ -1,0 +1,28 @@
+name: Conditional Deployment Chain
+
+on:
+  workflow_run:
+    workflows: ["Run Tests"]
+    types:
+      - completed
+
+jobs:
+  evaluate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect Upstream Conclusion
+        run: |
+          echo "Upstream Workflow ID: ${{ github.event.workflow_run.id }}"
+          echo "Upstream Execution Conclusion: ${{ github.event.workflow_run.conclusion }}"
+
+      - name: Check Failure State
+        if: github.event.workflow_run.conclusion != 'success'
+        run: |
+          echo "::error::Upstream verification tests failed or were cancelled. Deploy aborted."
+          exit 1
+
+      - name: Execute Production Deployment
+        if: github.event.workflow_run.conclusion == 'success'
+        run: |
+          echo "Confirmed Status: Success!"
+          echo "Initiating cloud environment deployment sequences..."
